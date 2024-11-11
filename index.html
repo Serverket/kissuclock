@@ -1,0 +1,133 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>KISS UClock</title>  
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Font Awesome -->  
+    <style>  
+        body {  
+            font-family: 'Roboto', sans-serif;  
+            color: #000000; /* Default text color */  
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for dark mode */  
+        }  
+        .dark-mode {  
+            background-color: #1a202c; /* Dark background */  
+            color: #ffffff; /* Light text */  
+        }  
+        .dark-mode select {  
+            background-color: #2d3748; /* Dark select background */  
+            color: #ffffff; /* White text for select */  
+        }  
+        .light-mode select {  
+            background-color: #ffffff; /* Light select background */  
+            color: #000000; /* Black text for select */  
+        }  
+        /* Ensure proper sizing for toggle */  
+        #darkModeToggle {  
+            width: 42px;  /* Width to fit icon */  
+            height: 42px; /* Height to fit icon */  
+            display: flex; /* Align flex items */  
+            justify-content: center; /* Center icon */  
+            align-items: center; /* Center icon */  
+            position: absolute; /* Position relative to parent */  
+            top: 10px; /* 2px margin on top */  
+            right: 10px; /* 2px margin on right */  
+        }  
+        /* Proper sizing for select */  
+        #timezoneSelector {  
+            min-width: 150px;  /* Minimum width for select */  
+            height: 42px; /* Height to match toggle */  
+        }  
+    </style>  
+</head>  
+<body class="flex flex-col items-center justify-center h-screen bg-gray-100 light-mode relative"> <!-- Add relative for absolute positioning of toggle -->  
+    
+    <button id="darkModeToggle" class="border border-gray-300 rounded-lg p-0"> <!-- Moved Toggle Button -->  
+        <span id="darkModeIcon" class="text-xl inline-block">  
+            <i class="fas fa-moon"></i> <!-- Font Awesome moon icon -->  
+        </span>  
+    </button>  
+
+    <div class="text-center">  
+        <h1 id="title" class="text-2xl font-bold mb-6">World Clocks</h1>  
+        
+        <div id="localTime" class="text-xl font-bold my-4">My Time: </div>  
+        
+        <div class="grid grid-cols-2 gap-4">  
+            <div id="miamiTime" class="text-xl font-bold"></div>  
+            <div id="dallasTime" class="text-xl font-bold"></div>  
+            <div id="houstonTime" class="text-xl font-bold"></div>  
+            <div id="selectedTime" class="text-xl font-bold"></div>  
+        </div>  
+
+        <div class="flex items-center space-x-2 mt-4">   
+            <select id="timezoneSelector" class="border border-gray-300 p-2 rounded-lg mb-4">  
+                <option value="UTC">UTC</option>  
+                <option value="America/Los_Angeles">Los Angeles</option>  
+                <option value="America/New_York">New York</option>  
+                <option value="Europe/Berlin">Berlin</option>  
+                <option value="Asia/Tokyo">Tokyo</option>  
+                <option value="Australia/Sydney">Sydney</option>  
+            </select>  
+        </div>  
+    </div>  
+
+    <script>  
+        function setLanguage() {  
+            const userLang = navigator.language || navigator.userLanguage; // Detect user language  
+            const isSpanish = userLang.startsWith('es');  
+
+            document.getElementById('title').textContent = isSpanish ? 'Relojes del Mundo' : 'World Clocks';  
+            document.getElementById('localTime').textContent = isSpanish ? 'Mi Hora: ' : 'My Time: ';  
+            document.getElementById('miamiTime').textContent = isSpanish ? 'Miami: ' : 'Miami: ';  
+            document.getElementById('dallasTime').textContent = isSpanish ? 'Dallas: ' : 'Dallas: ';  
+            document.getElementById('houstonTime').textContent = isSpanish ? 'Houston: ' : 'Houston: ';  
+            document.getElementById('selectedTime').textContent = isSpanish ? 'Seleccionado: ' : 'Selected: ';  
+        }  
+
+        function updateClock() {  
+            const options = { timeStyle: 'short', hour12: true };  
+            const localTime = new Date();  
+            document.getElementById('localTime').textContent = `My Time: ${localTime.toLocaleString(undefined, options)}`; // Update to only set new time  
+
+            const timeZones = {  
+                "Miami": "America/New_York",  
+                "Dallas": "America/Chicago",  
+                "Houston": "America/Chicago"  
+            };  
+
+            // Clear previous content and then update  
+            for (const [city, tz] of Object.entries(timeZones)) {  
+                const cityTime = new Date().toLocaleString("en-US", { timeZone: tz, ...options });  
+                document.getElementById(`${city.toLowerCase()}Time`).textContent = `${city}: ${cityTime}`; // Update to only set new time  
+            }  
+
+            const selectedTimeZone = document.getElementById('timezoneSelector').value;  
+            const selectedTime = new Date().toLocaleString("en-US", { timeZone: selectedTimeZone, ...options });  
+            document.getElementById('selectedTime').textContent = `Selected: ${selectedTime}`; // Update to only set new time  
+        }  
+
+        setLanguage(); // Set language on load  
+        setInterval(updateClock, 1000);  
+        updateClock(); // Initial call to display time immediately  
+
+        // Dark mode toggle  
+        const darkModeToggle = document.getElementById('darkModeToggle');  
+        darkModeToggle.addEventListener('click', () => {  
+            document.body.classList.toggle('dark-mode');  
+            document.body.classList.toggle('light-mode');  
+            const icon = document.getElementById('darkModeIcon');  
+            // Toggle between moon and sun Font Awesome icons  
+            icon.innerHTML = document.body.classList.contains('dark-mode') ?   
+                `<i class="fas fa-sun"></i>` :  // Font Awesome sun icon  
+                `<i class="fas fa-moon"></i>`;  // Font Awesome moon icon  
+        });  
+
+        // Update clock initially  
+        updateClock();  
+    </script>  
+</body>  
+</html>
