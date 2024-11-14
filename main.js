@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Tray, Menu } = require('electron');  
+const { app, BrowserWindow, Tray, Menu, ipcMain } = require('electron');  
+const { autoUpdater } = require('electron-updater');
 const path = require('path');  
 
 let mainWindow;  
@@ -17,11 +18,11 @@ function createWindow() {
     mainWindow.loadFile('index.html');  
 
     // Show the window when the tray icon is clicked  
-    tray = new Tray(path.join(__dirname, 'clock-icon.png')); // Path to your tray icon  
+    tray = new Tray(path.join(__dirname, 'clock.png'));
     const contextMenu = Menu.buildFromTemplate([  
         { label: 'Show', click: () => { mainWindow.show(); } },  
-        { label: 'Hide', click: () => { mainWindow.hide(); } }, // New Hide option  
-        { label: 'Quit', click: () => { app.quit(); } } // Exiting the application  
+        { label: 'Hide', click: () => { mainWindow.hide(); } },
+        { label: 'Quit', click: () => { app.quit(); } } 
     ]);  
     
     tray.setToolTip('KISS UClock');  
@@ -29,6 +30,18 @@ function createWindow() {
     
     tray.on('click', () => {  
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();  
+    });  
+
+    // Check for updates  
+    autoUpdater.checkForUpdatesAndNotify();  
+
+    // Listen for update events  
+    autoUpdater.on('update-available', () => {  
+        mainWindow.webContents.send('update_available');  
+    });  
+
+    autoUpdater.on('update-downloaded', () => {  
+        mainWindow.webContents.send('update_downloaded');  
     });  
 
     // Modify window close behavior  
@@ -66,4 +79,9 @@ app.on('activate', () => {
 // Handle application exit  
 app.on('before-quit', () => {  
     app.isQuiting = true; // Flag to indicate app is quitting  
+});  
+
+// Restart the app after update  
+ipcMain.on('restart_app', () => {  
+    autoUpdater.quitAndInstall();  
 });

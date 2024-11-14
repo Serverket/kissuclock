@@ -76,6 +76,8 @@
     </div>  
 
     <script>  
+        const { ipcRenderer } = require('electron');  
+
         function setLanguage() {  
             const userLang = navigator.language || navigator.userLanguage; // Detect user language  
             const isSpanish = userLang.startsWith('es');  
@@ -128,6 +130,18 @@
 
         // Update clock initially  
         updateClock();  
+
+        // Listen for update notifications  
+        ipcRenderer.on('update_available', () => {  
+            alert('A new update is available. Please restart the app to install it.');  
+        });  
+
+        ipcRenderer.on('update_downloaded', () => {  
+            const restart = confirm('Update downloaded. Restart now?');  
+            if (restart) {  
+                ipcRenderer.send('restart_app');  
+            }  
+        });  
     </script>  
 </body>  
 </html>

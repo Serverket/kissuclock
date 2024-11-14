@@ -1,1 +1,55 @@
-{"name":"kissuclock","version":"1.0.0","main":"main.js","scripts":{"start":"electron .","build":"electron-builder"},"devDependencies":{"electron":"^33.2.0","electron-builder":"^25.1.8"}}
+{
+    "name": "kissuclock",
+    "version": "1.1.0",
+    "description": "A simple world clock application.",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder"
+    },
+    "author": "Serverket",
+    "license": "MIT",
+    "build": {
+        "appId": "com.serverket.kissuclock",
+        "linux": {
+            "target": [
+                {
+                    "target": "AppImage",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
+            "category": "Utility",
+            "desktop": {
+                "Name": "KISS UClock",
+                "GenericName": "Clock Application",
+                "Comment": "A simple world clock application",
+                "Icon": "clock.ico"
+            }
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
+            "icon": "clock.ico"
+        },
+        "publish": [
+            {
+                "provider": "github",
+                "owner": "Serverket",
+                "repo": "kissuclock"
+            }
+        ]
+    },
+    "devDependencies": {
+        "electron": "latest",
+        "electron-builder": "latest",
+        "electron-updater": "latest"
+    }
+}
