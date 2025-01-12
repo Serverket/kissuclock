@@ -1,6 +1,6 @@
 <div id="header" align="center">  
 
-# KISS UClock &middot; ![Release Status](https://img.shields.io/badge/release-v1.0.0-brightgreen) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react) [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)  
+# KISS UClock &middot; ![Release Status](https://img.shields.io/badge/release-v1.1.5-brightgreen) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react) [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)  
 A simple yet effective multi-time zone clock application.
 </div>  
 
@@ -10,6 +10,11 @@ You'll need at least `node 18`, `electron`, and optionally `bun` (it's faster wi
 ``` 
 bun install  
 bun run start  
+```
+
+If you want to build for GNU/Linux:
+``` 
+bun run build  
 ```
 
 ## :star2: Main Features  
